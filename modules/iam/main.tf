@@ -129,35 +129,6 @@ resource "aws_iam_group_policy_attachment" "iam_change_password_group" {
   policy_arn = "arn:aws:iam::aws:policy/IAMUserChangePassword"
 }
 
-### Cloud Engineers
-resource "aws_iam_group" "ccs_cloud_engineers_group" {
-  name = var.iam_ccs_cloud_engineers_group
-}
-
-resource "aws_iam_policy" "ccs_cloud_engineers_admin_with_mfa" {
-  name = var.iam_ccs_cloud_engineers_admin_with_mfa_policy_name
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        Effect : "Allow",
-        Action : "*",
-        Resource : "*",
-        Condition : {
-          "Bool" : {
-            "aws:MultiFactorAuthPresent" : "true"
-          }
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_group_policy_attachment" "ccs_cloud_engineers_admin_access_with_mfa" {
-  group      = aws_iam_group.ccs_cloud_engineers_group.id
-  policy_arn = aws_iam_policy.ccs_cloud_engineers_admin_with_mfa.arn
-}
-
 resource "aws_iam_role" "Techops_Jenkins_Role" {
   assume_role_policy = jsonencode(
     {
