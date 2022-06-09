@@ -129,6 +129,35 @@ resource "aws_iam_group_policy_attachment" "iam_change_password_group" {
   policy_arn = "arn:aws:iam::aws:policy/IAMUserChangePassword"
 }
 
+### Cloud Engineers
+resource "aws_iam_group" "ccs_cloud_engineers_group" {
+  name = var.iam_ccs_cloud_engineers_group
+}
+
+resource "aws_iam_policy" "ccs_cloud_engineers_admin_with_mfa" {
+  name = var.iam_ccs_cloud_engineers_admin_with_mfa_policy_name
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        Effect : "Allow",
+        Action : "*",
+        Resource : "*",
+        Condition : {
+          "Bool" : {
+            "aws:MultiFactorAuthPresent" : "true"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_group_policy_attachment" "ccs_cloud_engineers_admin_access_with_mfa" {
+  group      = aws_iam_group.ccs_cloud_engineers_group.id
+  policy_arn = aws_iam_policy.ccs_cloud_engineers_admin_with_mfa.arn
+}
+
 resource "aws_iam_role" "Techops_Jenkins_Role" {
   assume_role_policy = jsonencode(
     {
@@ -152,93 +181,13 @@ resource "aws_iam_role" "Techops_Jenkins_Role" {
     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
     "arn:aws:iam::aws:policy/CloudWatchEventsFullAccess",
     "arn:aws:iam::aws:policy/CloudWatchFullAccess",
+    "arn:aws:iam::${data.aws_caller_identity.account_id.id}:policy/packer-policy",
+    "arn:aws:iam::aws:policy/IAMFullAccess",
   ]
   max_session_duration = 3600
   name                 = "Techops_Jenkins_Role"
   path                 = "/"
 }
-
-data "aws_caller_identity" "current" {}
-
-data "aws_iam_policy_document" "ccs_api_gateway_reverse_proxy_iam_policy" {
-  version = "2012-10-17"
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      identifiers = ["ec2.amazonaws.com"]
-      type        = "Service"
-    }
-
-    effect = "Allow"
-  }
-}
-
-data "aws_iam_policy_document" "ccs_api_gateway_reverse_proxy_to_cloudwatch_logs_policy" {
-  version = "2012-10-17"
-  statement {
-    actions = [
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:PutLogEvents",
-      "logs:DescribeLogStreams"
-    ]
-
-    effect = "Allow"
-
-    resources = [
-      "arn:aws:logs:*:*:*"
-    ]
-  }
-}
-
-data "aws_iam_policy_document" "ccs_api_gateway_reverse_proxy_s3_bucket_policy" {
-  version = "2012-10-17"
-  statement {
-    sid = ""
-    actions = [
-      "s3:GetObject"
-    ]
-
-    effect = "Allow"
-
-    resources = [
-      "arn:aws:s3:::${var.reverse_proxy_config_s3_bucket_name}/*"
-    ]
-  }
-
-  statement {
-    sid = ""
-    actions = [
-      "s3:ListBucket"
-    ]
-
-    effect = "Allow"
-
-    resources = [
-      "arn:aws:s3:::${var.reverse_proxy_config_s3_bucket_name}"
-    ]
-  }
-}
-
-data "aws_iam_policy_document" "ccs_api_gateway_reverse_proxy_secrets_manager_policy" {
-  version = "2012-10-17"
-  statement {
-    sid = ""
-    actions = [
-      "secretsmanager:GetSecretValue"
-    ]
-
-    effect = "Allow"
-
-    resources = [
-      "*"
-    ]
-  }
-}
-
-#####################
-
 
 resource "aws_iam_role" "ccs_api_gateway_reverse_proxy_eu_west_2a_role" {
   name               = "${var.ccs_api_gateway_reverse_proxy_eu_west_2a_component_name}_role"

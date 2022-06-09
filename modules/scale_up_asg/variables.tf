@@ -1,7 +1,9 @@
-variable "scale_up_cron" {
+variable "scale_up_cron" {}
+
+variable "time_zone" {
   type        = string
-  description = "The time when the recurring scale up action start.Cron format"
-  default     = "00 09 * * *"
+  description = "The time zone to use."
+  default     = "Europe/London"
 }
 
 variable "min_size" {}

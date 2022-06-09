@@ -1,7 +1,9 @@
-variable "scale_down_cron" {
+variable "scale_down_cron" {}
+
+variable "time_zone" {
   type        = string
-  description = "The time when the recurring scale down action start.Cron format"
-  default     = "00 17 * * *"
+  description = "The time zone to use."
+  default     = "Europe/London"
 }
 
 variable "min_size" {}

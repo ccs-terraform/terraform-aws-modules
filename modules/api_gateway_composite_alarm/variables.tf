@@ -30,10 +30,6 @@ variable "error_rate_5xx_metric_name" {
   default = "5XXError"
 }
 
-variable "region" {
-  default = "eu-west-2"
-}
-
 variable "rest_api_api_name" {}
 
 variable "sns_topic_arn" {}

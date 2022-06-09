@@ -4,7 +4,7 @@ data "aws_iam_policy_document" "secure_transport_policy" {
 
     principals {
       identifiers = ["*"]
-      type = "*"
+      type        = "*"
     }
 
     actions = [
