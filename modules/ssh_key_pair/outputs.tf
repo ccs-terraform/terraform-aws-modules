@@ -3,5 +3,5 @@ output "keypair_name" {
 }
 
 output "keypair_path" {
-  value = local_file.terraform_local_key.filename
+  value = local_sensitive_file.terraform_local_key.filename
 }

@@ -8,7 +8,7 @@ resource "tls_private_key" "terraform_private_key" {
   rsa_bits  = 4096
 }
 
-resource "local_file" "terraform_local_key" {
+resource "local_sensitive_file" "terraform_local_key" {
   filename          = local.key_path
   sensitive_content = tls_private_key.terraform_private_key.private_key_pem
   file_permission   = "0400"
