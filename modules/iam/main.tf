@@ -177,7 +177,6 @@ resource "aws_iam_role" "Techops_Jenkins_Role" {
   force_detach_policies = false
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
-    "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess",
     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
     "arn:aws:iam::aws:policy/CloudWatchEventsFullAccess",
     "arn:aws:iam::aws:policy/CloudWatchFullAccess",
@@ -229,6 +228,16 @@ resource "aws_iam_instance_profile" "ccs_api_gateway_reverse_proxy_bastion_profi
   role = aws_iam_role.ccs_api_gateway_reverse_proxy_bastion_role.name
 }
 
+resource "aws_iam_policy" "ccs_api_gateway_update_launch_template_policy" {
+  name   = "jenkins_update_launch_template_policy"
+  policy = data.aws_iam_policy_document.ccs_api_gateway_launch_template_update_policy.json
+}
+
+resource "aws_iam_policy" "ccs_api_gateway_kms_jenkins_policy" {
+  name   = "jenkins_kms_policy"
+  policy = data.aws_iam_policy_document.ccs_api_gateway_kms_jenkins_policy.json
+}
+
 resource "aws_iam_policy" "ccs_api_gateway_reverse_proxy_to_cloudwatch_logs" {
   name   = "ccs_api_gateway_reverse_proxy_to_cloudwatch_logs"
   policy = data.aws_iam_policy_document.ccs_api_gateway_reverse_proxy_to_cloudwatch_logs_policy.json
@@ -242,6 +251,16 @@ resource "aws_iam_policy" "ccs_api_gateway_reverse_proxy_s3_bucket_policy" {
 resource "aws_iam_policy" "ccs_api_gateway_reverse_proxy_secrets_manager_policy" {
   name   = "ccs_api_gateway_reverse_proxy_secrets_manager_policy"
   policy = data.aws_iam_policy_document.ccs_api_gateway_reverse_proxy_secrets_manager_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "ccs_api_gateway_jenkins_update_launch_template" {
+  policy_arn = aws_iam_policy.ccs_api_gateway_update_launch_template_policy.arn
+  role       = aws_iam_role.Techops_Jenkins_Role.name
+}
+
+resource "aws_iam_role_policy_attachment" "ccs_api_gateway_jenkins_kms" {
+  policy_arn = aws_iam_policy.ccs_api_gateway_kms_jenkins_policy.arn
+  role       = aws_iam_role.Techops_Jenkins_Role.name
 }
 
 resource "aws_iam_role_policy_attachment" "ccs_api_gateway_reverse_proxy_eu_west_2a_to_cloudwatch_logs" {
