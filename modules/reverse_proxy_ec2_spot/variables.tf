@@ -75,3 +75,7 @@ variable "ccs_api_gateway_reverse_proxy_eu_west_2b_profile" {}
 variable "ccs_api_gateway_reverse_proxy_eu_west_2c_profile" {}
 
 variable "eip_name" {}
+
+variable "kms_key_id" {}
+
+variable "key_arn" {}

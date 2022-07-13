@@ -101,3 +101,36 @@ data "aws_iam_policy_document" "ccs_api_gateway_reverse_proxy_secrets_manager_po
     ]
   }
 }
+
+data "aws_iam_policy_document" "ccs_api_gateway_launch_template_update_policy" {
+  statement {
+    sid    = "JenkinsRoleLaunchTemplateUpdatePermissions"
+    effect = "Allow"
+    actions = [
+      "ec2:GetLaunchTemplateData",
+      "ec2:ModifyLaunchTemplate",
+      "ec2:CreateLaunchTemplateVersion",
+      "ec2:Describe*",
+      "ec2:Get*",
+      "ec2:List*",
+      "autoscaling:Describe*",
+      "autoscaling:UpdateAutoScalingGroup",
+      "elasticloadbalancing:Describe*"
+    ]
+    resources = ["*"]
+  }
+}
+
+data "aws_iam_policy_document" "ccs_api_gateway_kms_jenkins_policy" {
+  statement {
+    sid    = "JenkinsRoleKMSPermissions"
+    effect = "Allow"
+    actions = [
+      "kms:*"
+    ]
+
+    resources = [
+      "arn:aws:kms:eu-west-2:${data.aws_caller_identity.account_id.account_id}:alias/${var.environment}-api-gateway-ebs-kms-key"
+    ]
+  }
+}
