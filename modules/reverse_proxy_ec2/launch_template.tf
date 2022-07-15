@@ -52,6 +52,7 @@ resource "aws_launch_template" "ccs_api_gateway_reverse_proxy_bastion_launch_tem
       encrypted             = "true"
       volume_size           = 8
       volume_type           = "gp2"
+      kms_key_id            = var.kms_key_id
     }
   }
 
@@ -84,6 +85,7 @@ resource "aws_launch_template" "ccs_api_gateway_reverse_proxy_2a_launch_template
       encrypted             = "true"
       volume_size           = 8
       volume_type           = "gp2"
+      kms_key_id            = var.kms_key_id
     }
   }
 
@@ -111,6 +113,7 @@ resource "aws_launch_template" "ccs_api_gateway_reverse_proxy_2b_launch_template
       encrypted             = "true"
       volume_size           = 8
       volume_type           = "gp2"
+      kms_key_id            = var.kms_key_id
     }
   }
 
@@ -138,6 +141,7 @@ resource "aws_launch_template" "ccs_api_gateway_reverse_proxy_2c_launch_template
       encrypted             = "true"
       volume_size           = 8
       volume_type           = "gp2"
+      kms_key_id            = var.kms_key_id
     }
   }
 
