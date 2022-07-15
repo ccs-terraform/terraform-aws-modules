@@ -1,3 +1,7 @@
+data "aws_kms_key" "kms_key_by_alias" {
+  key_id = "alias/${var.environment}-api-gateway-ebs-kms-key"
+}
+
 data "aws_caller_identity" "account_id" {}
 
 data "aws_iam_policy_document" "ccs_api_gateway_reverse_proxy_iam_policy" {
@@ -130,7 +134,7 @@ data "aws_iam_policy_document" "ccs_api_gateway_kms_jenkins_policy" {
     ]
 
     resources = [
-      "arn:aws:kms:eu-west-2:${data.aws_caller_identity.account_id.account_id}:alias/${var.environment}-api-gateway-ebs-kms-key"
+      "arn:aws:kms:eu-west-2:${data.aws_caller_identity.account_id.account_id}:key/${data.aws_kms_key.kms_key_by_alias.id}"
     ]
   }
 }
