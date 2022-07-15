@@ -182,6 +182,8 @@ resource "aws_iam_role" "Techops_Jenkins_Role" {
     "arn:aws:iam::aws:policy/CloudWatchFullAccess",
     "arn:aws:iam::${data.aws_caller_identity.account_id.id}:policy/packer-policy",
     "arn:aws:iam::aws:policy/IAMFullAccess",
+    "${aws_iam_policy.ccs_api_gateway_kms_jenkins_policy.id}",
+    "${aws_iam_policy.ccs_api_gateway_update_launch_template_policy.id}",
   ]
   max_session_duration = 3600
   name                 = "Techops_Jenkins_Role"
@@ -251,16 +253,6 @@ resource "aws_iam_policy" "ccs_api_gateway_reverse_proxy_s3_bucket_policy" {
 resource "aws_iam_policy" "ccs_api_gateway_reverse_proxy_secrets_manager_policy" {
   name   = "ccs_api_gateway_reverse_proxy_secrets_manager_policy"
   policy = data.aws_iam_policy_document.ccs_api_gateway_reverse_proxy_secrets_manager_policy.json
-}
-
-resource "aws_iam_role_policy_attachment" "ccs_api_gateway_jenkins_update_launch_template" {
-  policy_arn = aws_iam_policy.ccs_api_gateway_update_launch_template_policy.arn
-  role       = aws_iam_role.Techops_Jenkins_Role.name
-}
-
-resource "aws_iam_role_policy_attachment" "ccs_api_gateway_jenkins_kms" {
-  policy_arn = aws_iam_policy.ccs_api_gateway_kms_jenkins_policy.arn
-  role       = aws_iam_role.Techops_Jenkins_Role.name
 }
 
 resource "aws_iam_role_policy_attachment" "ccs_api_gateway_reverse_proxy_eu_west_2a_to_cloudwatch_logs" {
